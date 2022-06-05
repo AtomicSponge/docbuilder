@@ -113,4 +113,4 @@ settings['jobs'].forEach(job => {
         process.stdout.write(`${colors.GREEN}Complete!${colors.CLEAR}\n`)
 })
 
-process.stdout.write(`\n${colors.DIM}${colors.GREEN}Done!${colors.CLEAR}\n`)
+process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
