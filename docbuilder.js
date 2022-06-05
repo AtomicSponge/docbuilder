@@ -89,7 +89,7 @@ try {
 settings['jobs'].forEach(job => {
     //  Verify object format
     if(job['job'] === undefined || job['generator'] === undefined || job['path'] === undefined)
-        scriptError(`Invalid settings format.`)
+        scriptError(`Invalid job format.`)
 
     process.stdout.write(`Running job ${job['job']}... `)
 
@@ -101,7 +101,7 @@ settings['jobs'].forEach(job => {
     //  Log output & status of job
     const logOutput = `--------------------------------------------------\n` +
         `Job: ${job['job']}\n--------------------------------------------------\n` +
-        `Return code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`
+        `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`
     try {
         fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`, logOutput)
     } catch (err) { scriptError(err) }
