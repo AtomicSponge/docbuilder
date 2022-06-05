@@ -65,6 +65,7 @@ if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
 if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['OUTPUT_FOLDER']
 
 process.stdout.write(`${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
+shell.exec(`3>&1 4>&2 &> ${process.cwd()}/${constants.LOG_FILE}`)
 
 //  Run each job
 settings['jobs'].forEach(job => {
@@ -72,9 +73,8 @@ settings['jobs'].forEach(job => {
     var execCommand = settings['generators'][job['generator']]
     execCommand = execCommand.replace('$PROJECT_LOCATION', job['path'])
     execCommand = execCommand.replace('$PROJECT', job['job'])
-    //console.log(execCommand)
-    //3>&1 4>&2 &> "${process.cwd()}/${constants.LOG_FILE}"
-    //shell.exec()
+    console.log(execCommand)
+    //const res = shell.exec(execCommand)
 })
 
 process.stdout.write(`\n${colors.DIM}${colors.GREEN}Done!${colors.CLEAR}\n`)
