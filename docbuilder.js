@@ -85,6 +85,14 @@ try {
         `Last ran: ${month}-${day}-${year} ${hour}:${minutes}:${seconds}\n\n`)
 } catch (err) { scriptError(err) }
 
+try {
+    fs.accessSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
+} catch (err) {
+    try {
+        fs.mkdirSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
+    } catch (err) { scriptError(err) }
+}
+
 //  Run each job
 settings['jobs'].forEach(job => {
     //  Verify object format
@@ -92,6 +100,17 @@ settings['jobs'].forEach(job => {
         scriptError(`Invalid job format.`)
 
     process.stdout.write(`Running job ${job['job']}... `)
+
+    //  If the checkfolder flag is set, check for the folder and create if it doesn't exist
+    if(job['checkfolder']) {
+        try {
+            fs.accessSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
+        } catch (err) {
+            try {
+                fs.mkdirSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
+            } catch (err) { scriptError(err) }
+        }
+    }
 
     var execCommand = settings['generators'][job['generator']]
     execCommand = execCommand.replaceAll('$PROJECT_LOCATION', job['path'])
