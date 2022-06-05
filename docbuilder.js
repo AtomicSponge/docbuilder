@@ -68,6 +68,19 @@ if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['
 
 process.stdout.write(`${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
 
+//  Remove old log file
+try {
+    fs.unlinkSync(`${process.cwd()}/${constants.LOG_FILE}`)
+} catch (err) {}
+
+//  Create new log file
+try {
+    fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`,
+        `Documentation Generation Script Log File\n`)
+    fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`,
+        `Last ran: \n\n`)
+} catch (err) { scriptError(err) }
+
 //  Run each job
 settings['jobs'].forEach(job => {
     //  Verify object format
@@ -81,9 +94,13 @@ settings['jobs'].forEach(job => {
     execCommand = execCommand.replace('$PROJECT', job['job'])
     const res = shell.exec(execCommand, { silent: true })
 
-    //res.code
-    //res.stdout
-    //res.stderr
+    //  Log output & status of job
+    const logOutput = `--------------------------------------------------\n` +
+        `Job: ${job['job']}\n--------------------------------------------------\n` +
+        `Return code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`
+    try {
+        fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`, logOutput)
+    } catch (err) { scriptError(err) }
 
     if(res.code != 0)
         process.stdout.write(`${colors.RED}WARNING:  Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
