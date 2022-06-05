@@ -94,8 +94,9 @@ settings['jobs'].forEach(job => {
     process.stdout.write(`Running job ${job['job']}... `)
 
     var execCommand = settings['generators'][job['generator']]
-    execCommand = execCommand.replace('$PROJECT_LOCATION', job['path'])
-    execCommand = execCommand.replace('$PROJECT', job['job'])
+    execCommand = execCommand.replaceAll('$PROJECT_LOCATION', job['path'])
+    execCommand = execCommand.replaceAll('$PROJECT', job['job'])
+    execCommand = execCommand.replaceAll('$OUTPUT_FOLDER', constants.OUTPUT_FOLDER)
     const res = shell.exec(execCommand, { silent: true })
 
     //  Log output & status of job
