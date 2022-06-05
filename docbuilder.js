@@ -76,10 +76,13 @@ try {
 
 //  Create new log file
 try {
+    const date = new Date()
+    const [month, day, year] = [date.getMonth(), date.getDate(), date.getFullYear()]
+    const [hour, minutes, seconds] = [date.getHours(), date.getMinutes(), date.getSeconds()]
     fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`,
         `Documentation Generation Script Log File\n`)
     fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`,
-        `Last ran: \n\n`)
+        `Last ran: ${month}-${day}-${year} ${hour}:${minutes}:${seconds}\n\n`)
 } catch (err) { scriptError(err) }
 
 //  Run each job
