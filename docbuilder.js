@@ -66,7 +66,8 @@ if(settings['generators'] === undefined) scriptError('Must define documentation 
 if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
 if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['OUTPUT_FOLDER']
 
-process.stdout.write(`${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
+process.stdout.write(
+    `${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
 
 //  Remove old log file
 try {
@@ -87,7 +88,7 @@ settings['jobs'].forEach(job => {
     if(job['job'] === undefined || job['generator'] === undefined || job['path'] === undefined)
         scriptError(`Invalid settings format.`)
 
-    process.stdout.write(`Running job ${job['job']}...\n`)
+    process.stdout.write(`Running job ${job['job']}... `)
 
     var execCommand = settings['generators'][job['generator']]
     execCommand = execCommand.replace('$PROJECT_LOCATION', job['path'])
@@ -103,7 +104,10 @@ settings['jobs'].forEach(job => {
     } catch (err) { scriptError(err) }
 
     if(res.code != 0)
-        process.stdout.write(`${colors.RED}WARNING:  Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
+        process.stdout.write(`\n${colors.RED}WARNING:  ` +
+            `Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
+    else
+        process.stdout.write(`${colors.GREEN}Complete!${colors.CLEAR}\n`)
 })
 
 process.stdout.write(`\n${colors.DIM}${colors.GREEN}Done!${colors.CLEAR}\n`)
