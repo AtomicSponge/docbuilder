@@ -60,6 +60,8 @@ process.stdout.write(`${colors.CYAN}Documentation Generation Script${colors.CLEA
 
 const settings = loadSettings()
 
+if(settings['generators'] === undefined) scriptError('Must define documentation generators to run.')
+
 //  Override constants if any are defined in settings
 if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
 if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['OUTPUT_FOLDER']
@@ -69,12 +71,19 @@ shell.exec(`3>&1 4>&2 &> ${process.cwd()}/${constants.LOG_FILE}`)
 
 //  Run each job
 settings['jobs'].forEach(job => {
+    //  Verify object format
+    if(job['job'] === undefined || job['generator'] === undefined || job['path'] === undefined)
+        scriptError(`Invalid settings format.`)
+
     process.stdout.write(`Running job ${job['job']}...\n`)
+
     var execCommand = settings['generators'][job['generator']]
     execCommand = execCommand.replace('$PROJECT_LOCATION', job['path'])
     execCommand = execCommand.replace('$PROJECT', job['job'])
-    console.log(execCommand)
-    //const res = shell.exec(execCommand)
+    const res = shell.exec(execCommand)
+
+    if(res.code != 0)
+        process.stdout.write(`${colors.RED}WARNING:  Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
 })
 
 process.stdout.write(`\n${colors.DIM}${colors.GREEN}Done!${colors.CLEAR}\n`)
