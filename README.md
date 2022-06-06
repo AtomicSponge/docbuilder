@@ -60,6 +60,15 @@ Then just run the script in the output folder
 npx run docbuilder
 ```
 
+### Generators
+These are bash-style commands used to launch each different document generator.
+
+The following variables can be used:
+- __$PROJECT__ - The name of the project.
+- __$PROJECT_LOCATION__ - The full path to the project.
+- __$OUTPUT_FOLDER__ - The name of the output folder from settings.
+No quotation marks around the names!
+
 ### Optional settings:
 - __"LOG_FILE": "filename"__ - Change the filename of the log file.
 - __"OUTPUT_FOLDER": "foldername"__ - Change the output folder name. (default docs)
