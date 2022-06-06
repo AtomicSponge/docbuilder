@@ -2,6 +2,8 @@
 
 Run multiple document generators for multiple projects with one command.
 
+Uses the (ShellJS)[https://www.npmjs.com/package/shelljs] package for running commands.
+
 Install globaly:
 ```
 ```
