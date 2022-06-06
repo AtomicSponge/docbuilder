@@ -57,7 +57,7 @@ Inside the folder you wish to generate the out put in, create a __.docbuilder_co
 }
 ```
 
-Then just run the script in the output folder
+Then just run the script in the output folder:
 ```
 npx run docbuilder
 ```
