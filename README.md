@@ -10,7 +10,7 @@ Or per-project as a dev-dependency:
 ```
 ```
 
-### Usage
+## Usage
 
 Output of each job is logged in __.docbuilder.log__.
 
@@ -60,7 +60,7 @@ Then just run the script in the output folder
 npx run docbuilder
 ```
 
-### Generators
+## Generators
 These are bash-style commands used to launch each different document generator.
 
 The following variables can be used:
@@ -69,7 +69,7 @@ The following variables can be used:
 - __$OUTPUT_FOLDER__ - The name of the output folder from settings.
 No quotation marks around the names!
 
-### Optional settings:
+## Optional Settings:
 - __"LOG_FILE": "filename"__ - Change the filename of the log file.
 - __"OUTPUT_FOLDER": "foldername"__ - Change the output folder name. (default docs)
 - __"nologging": "nologging"__ - Disable logging.
