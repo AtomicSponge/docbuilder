@@ -42,7 +42,7 @@ const scriptError = (message) => {
 /**
  * Load local settings file
  * @returns Settings JSON object
- * @throws Error on fail
+ * @throws Error on fail then exits script
  */
 const loadSettings = () => {
     try {
@@ -50,6 +50,32 @@ const loadSettings = () => {
             `${process.cwd()}/${constants.SETTINGS_FILE}`))
     } catch (err) {
         scriptError(`Can't find a local '${constants.SETTINGS_FILE}' configuration file.`)
+    }
+}
+
+/**
+ * Write a message to the log file
+ * @param {String} message String to write
+ * @throws Error on fail then exits script
+ */
+const writeLog = (message) => {
+    try {
+        fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`, message)
+    } catch (err) { scriptError(err) }
+}
+
+/**
+ * Check if a folder exists, then create it if one does not
+ * @param {String} folder 
+ * @throws Error on fail then exits script
+ */
+const verifyFolder = (folder) => {
+    try {
+        fs.accessSync(folder)
+    } catch (err) {
+        try {
+            fs.mkdirSync(folder)
+        } catch (err) { scriptError(err) }
     }
 }
 
@@ -66,32 +92,24 @@ if(settings['generators'] === undefined) scriptError('Must define documentation 
 if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
 if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['OUTPUT_FOLDER']
 
-process.stdout.write(
-    `${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
+if (!settings['nologging']) {
+    process.stdout.write(
+        `${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
 
-//  Remove old log file
-try {
-    fs.unlinkSync(`${process.cwd()}/${constants.LOG_FILE}`)
-} catch (err) {}
+    //  Remove old log file
+    try {
+        fs.unlinkSync(`${process.cwd()}/${constants.LOG_FILE}`)
+    } catch (err) {}
 
-//  Create new log file
-try {
+    //  Create new log file
     const date = new Date()
     const [month, day, year] = [date.getMonth(), date.getDate(), date.getFullYear()]
     const [hour, minutes, seconds] = [date.getHours(), date.getMinutes(), date.getSeconds()]
-    fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`,
-        `Documentation Generation Script Log File\n`)
-    fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`,
-        `Last ran: ${month}-${day}-${year} ${hour}:${minutes}:${seconds}\n\n`)
-} catch (err) { scriptError(err) }
-
-try {
-    fs.accessSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
-} catch (err) {
-    try {
-        fs.mkdirSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
-    } catch (err) { scriptError(err) }
+    writeLog(`Documentation Generation Script Log File\n`)
+    writeLog(`Last ran: ${month}-${day}-${year} ${hour}:${minutes}:${seconds}\n\n`)
 }
+
+verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
 
 //  Run each job
 settings['jobs'].forEach(job => {
@@ -102,15 +120,7 @@ settings['jobs'].forEach(job => {
     process.stdout.write(`Running job ${job['job']}... `)
 
     //  If the checkfolder flag is set, check for the folder and create if it doesn't exist
-    if(job['checkfolder']) {
-        try {
-            fs.accessSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
-        } catch (err) {
-            try {
-                fs.mkdirSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
-            } catch (err) { scriptError(err) }
-        }
-    }
+    if(job['checkfolder']) verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
 
     var execCommand = settings['generators'][job['generator']]
     execCommand = execCommand.replaceAll('$PROJECT_LOCATION', job['path'])
@@ -118,13 +128,11 @@ settings['jobs'].forEach(job => {
     execCommand = execCommand.replaceAll('$OUTPUT_FOLDER', constants.OUTPUT_FOLDER)
     const res = shell.exec(execCommand, { silent: true })
 
-    //  Log output & status of job
-    const logOutput = `--------------------------------------------------\n` +
-        `Job: ${job['job']}\n--------------------------------------------------\n` +
-        `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`
-    try {
-        fs.appendFileSync(`${process.cwd()}/${constants.LOG_FILE}`, logOutput)
-    } catch (err) { scriptError(err) }
+    if (!settings['nologging'])
+        //  Log output & status of job
+        writeLog(`--------------------------------------------------\n` +
+            `Job: ${job['job']}\n--------------------------------------------------\n` +
+            `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`)
 
     if(res.code != 0)
         process.stdout.write(`\n${colors.RED}WARNING:  ` +
