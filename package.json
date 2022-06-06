@@ -1,13 +1,16 @@
 {
   "name": "@spongex/docbuilder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Run document generators to build website documentation",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wtfsystems/docbuilder.git"
   },
   "keywords": [
-    "documentation", "generator", "workflow", "script"
+    "documentation",
+    "generator",
+    "workflow",
+    "script"
   ],
   "author": "Matthew Evans",
   "license": "MIT",
@@ -16,7 +19,7 @@
     "url": "https://github.com/wtfsystems/docbuilder/issues"
   },
   "homepage": "https://github.com/wtfsystems/docbuilder#readme",
-  "scripts": {
+  "bin": {
     "docbuilder": "./docbuilder.js"
   },
   "dependencies": {

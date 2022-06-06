@@ -6,10 +6,12 @@ Uses the [ShellJS](https://www.npmjs.com/package/shelljs) package for running co
 
 Install globaly:
 ```
+npm i -g @spongex/docbuilder
 ```
 
 Or per-project as a dev-dependency:
 ```
+npm i @spongex/docbuilder --save-dev
 ```
 
 ## Usage
