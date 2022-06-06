@@ -1,4 +1,4 @@
-## Docbuilder
+## Docbuilder NodeJS Script
 
 Run multiple document generators for multiple projects with one command.
 
@@ -9,6 +9,8 @@ Install globaly:
 Or per-project as a dev-dependency:
 ```
 ```
+
+### Usage
 
 Output of each job is logged in __.docbuilder.log__.
 
@@ -58,7 +60,7 @@ Then just run the script in the output folder
 npx run docbuilder
 ```
 
-#### Optional settings:
+### Optional settings:
 - __"LOG_FILE": "filename"__ - Change the filename of the log file.
 - __"OUTPUT_FOLDER": "foldername"__ - Change the output folder name. (default docs)
 - __"nologging": "nologging"__ - Disable logging.
