@@ -1,4 +1,4 @@
-## Docbuilder NodeJS Script
+# Docbuilder NodeJS Script
 
 Run multiple document generators for multiple projects with one command.
 
