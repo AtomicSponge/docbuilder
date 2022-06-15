@@ -5,8 +5,7 @@ node_modules/
 *.code-workspace
 .vscode/
 
-.bakignore
-*_bak/
+*_backup/
 
 docs/
 .docbuilder_config.json

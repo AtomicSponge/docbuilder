@@ -7,7 +7,6 @@
  */
 
 const fs = require('fs')
-const shell = require('shelljs')
 
 /**
  * Font colors
@@ -79,6 +78,48 @@ const verifyFolder = (folder) => {
     }
 }
 
+/**
+ * Job runner - wraps exec in a promise array and runs all jobs
+ * @param {Array} jobs An array of jobs to run
+ * @param {String} command The system command to run
+ * @param {Function} splicer The splicer function to edit the command
+ * @param {Function} callback Command callback
+ * @return {Promise} Result of all jobs
+ */
+ const jobRunner = async (jobs, command, splicer, callback) => {
+    splicer = splicer || (() => { return command })
+    callback = callback || (() => {})
+    //  Wrapper class for promises
+    class Resolver {
+        constructor() {
+            this.promise = new Promise((resolve, reject) => {
+                this.reject = reject
+                this.resolve = resolve
+            })
+        }
+    }
+    //  Run all the jobs, resolve/reject promise once done
+    var runningJobs = []
+    jobs.forEach(job => {
+        runningJobs.push(new Resolver())
+        const jobIDX = runningJobs.length - 1
+        const run_command = splicer(job, command)
+        exec(run_command, (error, stdout, stderr) => {
+            if(error) runningJobs[jobIDX].reject(
+                { name: job['name'], command: run_command,
+                  code: error.code, stdout: stdout, stderr: stderr })
+            else runningJobs[jobIDX].resolve(
+                { name: job['name'], command: run_command,
+                  code: 0, stdout: stdout, stderr: stderr })
+            callback(error, stdout, stderr)
+        })
+    })
+    //  Collect the promises and return once all complete
+    var jobPromises = []
+    runningJobs.forEach(job => { jobPromises.push(job.promise) })
+    return await Promise.allSettled(jobPromises)
+}
+
 /*
  * Main script
  */
@@ -110,6 +151,20 @@ if (!settings['nologging']) {
 }
 
 verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
+
+jobRunner(settings['jobs'], "",
+    (job) => {
+        var runCmd = settings['generators'][job['generator']]
+        return runCmd
+    },
+    () => {
+        //
+    }
+)
+
+process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
+
+process.exit(0)
 
 //  Run each job
 settings['jobs'].forEach(job => {
