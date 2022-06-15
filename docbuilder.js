@@ -159,9 +159,9 @@ verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
 
 var logRes = ""
 
+process.stdout.write(`Running jobs, please wait...`)
 jobRunner(settings['jobs'], "",
     (job) => {
-        process.stdout.write(`Running job ${job['job']}... `)
         if(job['checkfolder']) verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
         var runCmd = settings['generators'][job['generator']]
         runCmd = runCmd.replaceAll('$PROJECT_LOCATION', job['path'])
@@ -174,8 +174,6 @@ jobRunner(settings['jobs'], "",
         if(error)
             process.stdout.write(`\n${colors.RED}WARNING:  ` +
                 `Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
-        else
-            process.stdout.write(`${colors.GREEN}Complete!${colors.CLEAR}\n`)
     }
 ).then(jobResults => {
     // aggragate results
