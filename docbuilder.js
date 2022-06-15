@@ -157,20 +157,14 @@ if (!settings['nologging']) {
     try {
         fs.unlinkSync(`${process.cwd()}/${constants.LOG_FILE}`)
     } catch (err) {}
-
-    //  Create new log file
-    const date = new Date()
-    const [month, day, year] = [date.getMonth(), date.getDate(), date.getFullYear()]
-    const [hour, minutes, seconds] = [date.getHours(), date.getMinutes(), date.getSeconds()]
-    writeLog(`Documentation Generation Script Log File\n`)
-    writeLog(`Last ran: ${month}-${day}-${year} ${hour}:${minutes}:${seconds}\n\n`)
+    writeLog(`Documentation Generation Script Log File\n\n`)
 }
 
 verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
 
 var logRes = ""
 
-process.stdout.write(`Running jobs, please wait...`)
+process.stdout.write(`Running jobs, please wait...\n`)
 jobRunner(settings['jobs'], "",
     (job) => {
         if(job['checkfolder']) verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
@@ -183,13 +177,18 @@ jobRunner(settings['jobs'], "",
     (error, cmdRes) => {
         logRes += `--------------------------------------------------\n` +
             `Job: ${cmdRes.name}\n--------------------------------------------------\n` +
-            `Command: ${cmdRes.command}\nReturn code: ${cmdRes.code}\n\nOutput:\n${cmdRes.stdout}\nErrors:\n${cmdRes.stderr}\n`
+            `Command: ${cmdRes.command}\nReturn code: ${cmdRes.code}\n\nOutput:\n${cmdRes.stdout}\nErrors:\n${cmdRes.stderr}\n\n`
         if(error)
             process.stdout.write(`\n${colors.RED}WARNING:  ` +
                 `Problems running job '${cmdRes.name}' see log for details...${colors.CLEAR}\n`)
     }
 ).then(jobResults => {
-    // aggragate results
-    if (!settings['nologging']) writeLog(logRes)
+    var goodRes = jobResults.length
+    jobResults.forEach(job => {if(job.status == 'rejected') goodRes-- })
+    if (!settings['nologging']) {
+        writeLog(logRes + `--------------------------------------------------\n\n`)
+        writeLog(`${goodRes} of ${jobResults.length} jobs completed successfully at ${new Date().toString()}`)
+    }
+    process.stdout.write(`\n${goodRes} of ${jobResults.length} jobs completed successfully at ${new Date().toString()}`)
     process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
 })
