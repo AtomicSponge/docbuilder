@@ -20,8 +20,6 @@ npm i @spongex/docbuilder --save-dev
 
 ## Usage
 
-Output of each job is logged in __.docbuilder.log__.
-
 Inside the folder you wish to generate the out put in, create a __.docbuilder_config.json__ file with the following format:
 ```
 {
@@ -67,6 +65,8 @@ Then just run the script in the output folder:
 ```
 npx docbuilder
 ```
+
+Output of each job is logged in __.docbuilder.log__.
 
 ## Generators
 These are system commands used to launch each different document generator.
