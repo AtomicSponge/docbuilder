@@ -141,7 +141,7 @@ const settings = loadSettings()
 if(settings['generators'] === undefined) scriptError('Must define documentation generators to run.')
 settings['jobs'].forEach(job => {
     //  Verify object format
-    if(job['job'] === undefined || job['generator'] === undefined || job['path'] === undefined)
+    if(job['name'] === undefined || job['generator'] === undefined || job['path'] === undefined)
         scriptError(`Invalid job format.`)
 })
 
@@ -176,14 +176,14 @@ jobRunner(settings['jobs'], "",
         if(job['checkfolder']) verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
         var runCmd = settings['generators'][job['generator']]
         runCmd = runCmd.replaceAll('$PROJECT_LOCATION', job['path'])
-        runCmd = runCmd.replaceAll('$PROJECT', job['job'])
+        runCmd = runCmd.replaceAll('$PROJECT', job['name'])
         runCmd = runCmd.replaceAll('$OUTPUT_FOLDER', constants.OUTPUT_FOLDER)
         return runCmd
     },
     (error, cmdRes) => {
         logRes += `--------------------------------------------------\n` +
-            `Job: ${job['job']}\n--------------------------------------------------\n` +
-            `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`
+            `Job: ${cmdRes.name}\n--------------------------------------------------\n` +
+            `Command: ${cmdRes.command}\nReturn code: ${cmdRes.code}\n\nOutput:\n${cmdRes.stdout}\nErrors:\n${cmdRes.stderr}\n`
         if(error)
             process.stdout.write(`\n${colors.RED}WARNING:  ` +
                 `Problems running job '${cmdRes.name}' see log for details...${colors.CLEAR}\n`)
