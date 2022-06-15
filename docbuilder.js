@@ -138,9 +138,9 @@ process.stdout.write(`${colors.CYAN}Documentation Generation Script${colors.CLEA
 
 const settings = loadSettings()
 
+//  Verify settings format
 if(settings['generators'] === undefined) scriptError('Must define documentation generators to run.')
 settings['jobs'].forEach(job => {
-    //  Verify object format
     if(job['name'] === undefined || job['generator'] === undefined || job['path'] === undefined)
         scriptError(`Invalid job format.`)
 })
