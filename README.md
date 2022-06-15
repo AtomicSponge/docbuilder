@@ -80,3 +80,4 @@ The following variables can be used:
 - __"LOG_FILE": "filename"__ - Change the filename of the log file.
 - __"OUTPUT_FOLDER": "foldername"__ - Change the output folder name. (default docs)
 - __"nologging": "nologging"__ - Disable logging.
+- __"checkfolder": "true"__ - Per-job setting to verify folder exists before generating docs.
