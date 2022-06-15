@@ -160,12 +160,12 @@ jobRunner(settings['jobs'], "",
     () => {
         //
     }
-)
-
-process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
-
-process.exit(0)
-
+).then(jobResults => {
+    // aggragate results
+    // write log
+    process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
+})
+/*
 //  Run each job
 settings['jobs'].forEach(job => {
     //  Verify object format
@@ -197,3 +197,4 @@ settings['jobs'].forEach(job => {
 })
 
 process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
+*/
