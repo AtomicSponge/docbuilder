@@ -149,7 +149,7 @@ settings['jobs'].forEach(job => {
 if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
 if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['OUTPUT_FOLDER']
 
-if (!settings['nologging']) {
+if(settings['nologging']) {
     process.stdout.write(
         `${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
 
@@ -160,10 +160,14 @@ if (!settings['nologging']) {
     writeLog(`Documentation Generation Script Log File\n\n`)
 }
 
+if(settings['removeold']) {
+    try {
+        fs.rmSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}`, {recursive: true, force: true})
+    } catch (err) {}
+}
 verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
 
 var logRes = ""
-
 process.stdout.write(`Running jobs, please wait...\n`)
 jobRunner(settings['jobs'], "",
     (job) => {
@@ -185,7 +189,7 @@ jobRunner(settings['jobs'], "",
 ).then(jobResults => {
     var goodRes = jobResults.length
     jobResults.forEach(job => {if(job.status == 'rejected') goodRes-- })
-    if (!settings['nologging']) {
+    if(settings['nologging']) {
         writeLog(logRes + `--------------------------------------------------\n\n`)
         writeLog(`${goodRes} of ${jobResults.length} jobs completed successfully at ${new Date().toString()}`)
     }

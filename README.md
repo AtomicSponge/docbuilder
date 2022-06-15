@@ -20,7 +20,7 @@ npm i @spongex/docbuilder --save-dev
 
 ## Usage
 
-Inside the folder you wish to generate the out put in, create a __.docbuilder_config.json__ file with the following format:
+Inside the folder you wish to generate the documentation in, create a __.docbuilder_config.json__ file with the following format:
 ```
 {
     "generators": {
@@ -66,7 +66,7 @@ Then just run the script in the output folder:
 npx docbuilder
 ```
 
-Output of each job is logged in __.docbuilder.log__.
+A __.docbuilder.log__ file will be created with the results of each job.
 
 ## Generators
 These are system commands used to launch each different document generator.
@@ -80,4 +80,5 @@ The following variables can be used:
 - __"LOG_FILE": "filename"__ - Change the filename of the log file.
 - __"OUTPUT_FOLDER": "foldername"__ - Change the output folder name. (default docs)
 - __"nologging": "nologging"__ - Disable logging.
+- __"removeold": "true"__ - Delete the old documentation folder before generation.
 - __"checkfolder": "true"__ - Per-job setting to verify folder exists before generating docs.
