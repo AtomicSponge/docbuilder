@@ -2,7 +2,9 @@
 
 Run multiple document generators for multiple projects with one command.
 
-Uses the [ShellJS](https://www.npmjs.com/package/shelljs) package for running commands.
+__Does heavy command injection, use at your own risk!__
+
+See [NodeJS's documentation](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback) on [exec](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback) for more information on how commands work.
 
 Install globally:
 ```
