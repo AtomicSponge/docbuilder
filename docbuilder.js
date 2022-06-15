@@ -7,6 +7,7 @@
  */
 
 const fs = require('fs')
+const { exec } = require('child_process')
 
 /**
  * Font colors
@@ -105,13 +106,23 @@ const verifyFolder = (folder) => {
         const jobIDX = runningJobs.length - 1
         const run_command = splicer(job, command)
         exec(run_command, (error, stdout, stderr) => {
+            var cmdRes = null
+            if(error) {
+                cmdRes = { name: job['name'], command: run_command,
+                           code: error.code, stdout: stdout, stderr: stderr }
+                runningJobs[jobIDX].reject(cmdRes)
+            } else {
+                cmdRes = { name: job['name'], command: run_command,
+                           code: 0, stdout: stdout, stderr: stderr }
+                runningJobs[jobIDX].resolve(cmdRes)
+            }
             if(error) runningJobs[jobIDX].reject(
                 { name: job['name'], command: run_command,
                   code: error.code, stdout: stdout, stderr: stderr })
             else runningJobs[jobIDX].resolve(
                 { name: job['name'], command: run_command,
                   code: 0, stdout: stdout, stderr: stderr })
-            callback(error, stdout, stderr)
+            callback(error, cmdRes)
         })
     })
     //  Collect the promises and return once all complete
@@ -169,11 +180,11 @@ jobRunner(settings['jobs'], "",
         runCmd = runCmd.replaceAll('$OUTPUT_FOLDER', constants.OUTPUT_FOLDER)
         return runCmd
     },
-    (error, stdout, stderr) => {
+    (error, cmdRes) => {
         logRes += ""
         if(error)
             process.stdout.write(`\n${colors.RED}WARNING:  ` +
-                `Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
+                `Problems running job '${cmdRes.name}' see log for details...${colors.CLEAR}\n`)
     }
 ).then(jobResults => {
     // aggragate results
