@@ -29,31 +29,31 @@ Inside the folder you wish to generate the out put in, create a __.docbuilder_co
     },
     "jobs": [
         {
-            "job": "wtengine",
+            "name": "wtengine",
             "generator": "doxygen",
             "path": "/home/matthew/Projects/wtengine",
             "checkfolder": "true"
         },
         {
-            "job": "ppms",
+            "name": "ppms",
             "generator": "doxygen",
             "path": "/home/matthew/Projects/ppms",
             "checkfolder": "true"
         },
         {
-            "job": "libwtf",
+            "name": "libwtf",
             "generator": "doxygen",
             "path": "/home/matthew/Projects/libwtf",
             "checkfolder": "true"
         },
         {
-            "job": "http_session_auth",
+            "name": "http_session_auth",
             "generator": "doxygen",
             "path": "/home/matthew/Projects/http_session_auth",
             "checkfolder": "true"
         },
         {
-            "job": "wtgui",
+            "name": "wtgui",
             "generator": "jdoc",
             "path": "/home/matthew/Projects/wtgui"
         }
