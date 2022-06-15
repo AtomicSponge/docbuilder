@@ -128,6 +128,11 @@ process.stdout.write(`${colors.CYAN}Documentation Generation Script${colors.CLEA
 const settings = loadSettings()
 
 if(settings['generators'] === undefined) scriptError('Must define documentation generators to run.')
+settings['jobs'].forEach(job => {
+    //  Verify object format
+    if(job['job'] === undefined || job['generator'] === undefined || job['path'] === undefined)
+        scriptError(`Invalid job format.`)
+})
 
 //  Override constants if any are defined in settings
 if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
@@ -152,49 +157,36 @@ if (!settings['nologging']) {
 
 verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}`)
 
+var logRes = ""
+
 jobRunner(settings['jobs'], "",
     (job) => {
+        process.stdout.write(`Running job ${job['job']}... `)
+        if(job['checkfolder']) verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
         var runCmd = settings['generators'][job['generator']]
+        runCmd = runCmd.replaceAll('$PROJECT_LOCATION', job['path'])
+        runCmd = runCmd.replaceAll('$PROJECT', job['job'])
+        runCmd = runCmd.replaceAll('$OUTPUT_FOLDER', constants.OUTPUT_FOLDER)
         return runCmd
     },
-    () => {
-        //
+    (error, stdout, stderr) => {
+        logRes += ""
+        if(error)
+            process.stdout.write(`\n${colors.RED}WARNING:  ` +
+                `Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
+        else
+            process.stdout.write(`${colors.GREEN}Complete!${colors.CLEAR}\n`)
     }
 ).then(jobResults => {
     // aggragate results
-    // write log
+    if (!settings['nologging']) writeLog(logRes)
     process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
 })
 /*
-//  Run each job
-settings['jobs'].forEach(job => {
-    //  Verify object format
-    if(job['job'] === undefined || job['generator'] === undefined || job['path'] === undefined)
-        scriptError(`Invalid job format.`)
-
-    process.stdout.write(`Running job ${job['job']}... `)
-
-    //  If the checkfolder flag is set, check for the folder and create if it doesn't exist
-    if(job['checkfolder']) verifyFolder(`${process.cwd()}/${constants.OUTPUT_FOLDER}/${job['job']}`)
-
-    var execCommand = settings['generators'][job['generator']]
-    execCommand = execCommand.replaceAll('$PROJECT_LOCATION', job['path'])
-    execCommand = execCommand.replaceAll('$PROJECT', job['job'])
-    execCommand = execCommand.replaceAll('$OUTPUT_FOLDER', constants.OUTPUT_FOLDER)
-    const res = shell.exec(execCommand, { silent: true })
-
     if (!settings['nologging'])
         //  Log output & status of job
         writeLog(`--------------------------------------------------\n` +
             `Job: ${job['job']}\n--------------------------------------------------\n` +
             `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`)
 
-    if(res.code != 0)
-        process.stdout.write(`\n${colors.RED}WARNING:  ` +
-            `Problems running job '${job['job']}' see log for details...${colors.CLEAR}\n`)
-    else
-        process.stdout.write(`${colors.GREEN}Complete!${colors.CLEAR}\n`)
-})
-
-process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
 */
