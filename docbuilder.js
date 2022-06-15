@@ -181,7 +181,9 @@ jobRunner(settings['jobs'], "",
         return runCmd
     },
     (error, cmdRes) => {
-        logRes += ""
+        logRes += `--------------------------------------------------\n` +
+            `Job: ${job['job']}\n--------------------------------------------------\n` +
+            `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`
         if(error)
             process.stdout.write(`\n${colors.RED}WARNING:  ` +
                 `Problems running job '${cmdRes.name}' see log for details...${colors.CLEAR}\n`)
@@ -191,11 +193,3 @@ jobRunner(settings['jobs'], "",
     if (!settings['nologging']) writeLog(logRes)
     process.stdout.write(`\n${colors.GREEN}Done!${colors.CLEAR}\n`)
 })
-/*
-    if (!settings['nologging'])
-        //  Log output & status of job
-        writeLog(`--------------------------------------------------\n` +
-            `Job: ${job['job']}\n--------------------------------------------------\n` +
-            `Command: ${execCommand}\nReturn code: ${res.code}\n\nOutput:\n${res.stdout}\nErrors:\n${res.stderr}\n`)
-
-*/
