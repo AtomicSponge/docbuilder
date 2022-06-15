@@ -6,6 +6,8 @@ __Does heavy command injection, use at your own risk!__
 
 See [NodeJS's documentation](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback) on [exec](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback) for more information on how commands work.
 
+Requires the use of third party documentation generators such as [Doxygen](https://www.doxygen.nl/index.html) and [JSDoc](https://jsdoc.app/).
+
 Install globally:
 ```
 npm i -g @spongex/docbuilder
@@ -67,13 +69,12 @@ npx docbuilder
 ```
 
 ## Generators
-These are bash-style commands used to launch each different document generator.
+These are system commands used to launch each different document generator.
 
 The following variables can be used:
 - __$PROJECT__ - The name of the project.
 - __$PROJECT_LOCATION__ - The full path to the project.
 - __$OUTPUT_FOLDER__ - The name of the output folder from settings.
-No quotation marks around the names!
 
 ## Optional Settings:
 - __"LOG_FILE": "filename"__ - Change the filename of the log file.
