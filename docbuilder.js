@@ -149,6 +149,7 @@ settings['jobs'].forEach(job => {
 if(settings['LOG_FILE'] !== undefined) constants.LOG_FILE = settings['LOG_FILE']
 if(settings['OUTPUT_FOLDER'] !== undefined) constants.OUTPUT_FOLDER = settings['OUTPUT_FOLDER']
 
+//  If nologging is defined in settings, skip logging
 if(!settings['nologging']) {
     process.stdout.write(
         `${colors.DIM}${colors.YELLOW}Logging output to '${constants.LOG_FILE}'...${colors.CLEAR}\n\n`)
@@ -160,6 +161,7 @@ if(!settings['nologging']) {
     writeLog(`Documentation Generation Script Log File\n\n`)
 }
 
+//  Remove old documentation folder if defined in settings
 if(settings['removeold']) {
     try {
         fs.rmSync(`${process.cwd()}/${constants.OUTPUT_FOLDER}`, {recursive: true, force: true})
