@@ -1,10 +1,10 @@
 {
   "name": "@spongex/docbuilder",
-  "version": "1.1.0wip",
+  "version": "1.1.0",
   "description": "Run document generators to build website documentation",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wtfsystems/docbuilder.git"
+    "url": "git+https://github.com/AtomicSponge/docbuilder.git"
   },
   "keywords": [
     "documentation",
@@ -16,9 +16,9 @@
   "license": "MIT",
   "url": "https://www.npmjs.com/package/@spongex/docbuilder",
   "bugs": {
-    "url": "https://github.com/wtfsystems/docbuilder/issues"
+    "url": "https://github.com/AtomicSponge/docbuilder/issues"
   },
-  "homepage": "https://github.com/wtfsystems/docbuilder#readme",
+  "homepage": "https://github.com/AtomicSponge/docbuilder#readme",
   "bin": {
     "docbuilder": "./docbuilder.js"
   }
