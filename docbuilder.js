@@ -116,12 +116,6 @@ const verifyFolder = (folder) => {
                            code: 0, stdout: stdout, stderr: stderr }
                 runningJobs[jobIDX].resolve(cmdRes)
             }
-            if(error) runningJobs[jobIDX].reject(
-                { name: job['name'], command: run_command,
-                  code: error.code, stdout: stdout, stderr: stderr })
-            else runningJobs[jobIDX].resolve(
-                { name: job['name'], command: run_command,
-                  code: 0, stdout: stdout, stderr: stderr })
             callback(error, cmdRes)
         })
     })
